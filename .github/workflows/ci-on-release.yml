@@ -13,21 +13,17 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Package
-        id: package
-        run: |
-          env | sort
 
+      - name: Package
+        run: |
           VERSION=${GITHUB_REF#refs/tags/}
 
-          # echo "VERSION=${VERSION}" >> $GITHUB_ENV
-
-          echo "::set-output name=version::${VERSION}"
-
           touch testfile-${VERSION}
+
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            testfile-${{ steps.package.outputs.version }}
+            testfile-${VERSION}
