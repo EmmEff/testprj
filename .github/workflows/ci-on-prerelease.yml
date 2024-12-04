@@ -15,16 +15,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Package
+        id: package
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
 
           touch testfile-${VERSION}
 
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create prerelease
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
           files: |
-            testfile-${VERSION}
+            testfile-${{ steps.package.outputs.version }}
