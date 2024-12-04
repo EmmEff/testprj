@@ -1,33 +1,30 @@
-name: "Release"
+name: "Prerelease"
 
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
 
 permissions:
   contents: write
 
 jobs:
-  publish-release:
+  publish-prerelease:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+
       - name: Package
         id: package
         run: |
-          env | sort
-
           VERSION=${GITHUB_REF#refs/tags/}
-
-          # echo "VERSION=${VERSION}" >> $GITHUB_ENV
-
-          echo "::set-output name=version::${VERSION}"
 
           touch testfile-${VERSION}
 
-      - name: Create release
+          echo "::set-output name=version::${VERSION}"
+      - name: Create prerelease
         uses: softprops/action-gh-release@v2
         with:
+          prerelease: true
           files: |
             testfile-${{ steps.package.outputs.version }}
